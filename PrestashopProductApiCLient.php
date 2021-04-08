@@ -18,6 +18,9 @@ class PrestashopProductApiCLient
     {
         $this->apiKey = $apiKey;
         $json = file_get_contents("https://{$apiKey}@dev.artemi.be/api/products/?output_format=JSON");
+        if (!isset($json)) {
+            throw new \Exception("Cannot access the api");
+        }
         $this->setProductIds($json);
     }
 
