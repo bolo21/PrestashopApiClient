@@ -14,16 +14,17 @@ class PrestashopProductApiCLient
      */
     private $apiKey;
 
-    public function __construct(string $apiKey)
+    public function __construct(string $apiKey, string $domain)
     {
         $this->apiKey = $apiKey;
-        $json = file_get_contents("https://{$apiKey}@dev.artemi.be/api/products/?output_format=JSON");
+        $access = "https://{$apiKey}@{$domain}/api/products/?output_format=JSON";
+        $json = file_get_contents($access);
         if (!isset($json)) {
-            throw new \Exception("Cannot access the api");
+            throw new \Exception("Cannot access the api : {$access}");
         }
         $this->setProductIds($json);
     }
-
+    
     /**
      * @param string $json
      */
