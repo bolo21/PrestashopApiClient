@@ -6,7 +6,7 @@ namespace Components\PrestashopApiClient;
 use Components\PrestashopApiClient\Exception\ProductNotFoundException;
 use Exception;
 
-class PrestashopProductApiCLient
+class PrestashopProductApiClient
 {
     /**
      * @var array
