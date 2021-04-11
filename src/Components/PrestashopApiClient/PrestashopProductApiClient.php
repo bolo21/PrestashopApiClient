@@ -3,6 +3,9 @@
 
 namespace Components\PrestashopApiClient;
 
+use Components\PrestashopApiClient\Exception\ProductNotFoundException;
+use Exception;
+
 class PrestashopProductApiCLient
 {
     /**
@@ -20,7 +23,7 @@ class PrestashopProductApiCLient
         $access = "https://{$apiKey}@{$domain}/api/products/?output_format=JSON";
         $json = file_get_contents($access);
         if (!isset($json)) {
-            throw new \Exception("Cannot access the api : {$access}");
+            throw new Exception("Cannot access the api : {$access}");
         }
         $this->setProductIds($json);
     }
@@ -34,7 +37,7 @@ class PrestashopProductApiCLient
         $objIds = json_decode_utf8($json);
         $objIds = $objIds->products;
         foreach ($objIds as $objId) {
-            array_push($this->productIds, $objId->id);
+            $this->productIds[$objId->id] = $objId->id;
         }
     }
 
@@ -45,12 +48,29 @@ class PrestashopProductApiCLient
     public function getProducts(int $limit)
     {
         $prestashopProducts = [];
-        foreach ($this->productIds as $key => $productId) {
-            if ($key == $limit) {
+        foreach ($this->productIds as $productId) {
+            if (count($prestashopProducts) == $limit) {
                 break;
             }
             array_push($prestashopProducts, new PrestashopProduct($this->apiKey, $productId));
         }
         return $prestashopProducts;
     }
+
+    /**
+     * @param array $ids
+     * @return array
+     */
+    public function getProductsByIds(array $ids)
+    {
+        $prestashopProducts = [];
+        foreach ($ids as $productId) {
+            if (!isset($this->productIds[$productId])) {
+                new ProductNotFoundException("Product having id {$productId} does not exist");
+            }
+            array_push($prestashopProducts, new PrestashopProduct($this->apiKey, $productId));
+        }
+        return $prestashopProducts;
+    }
 }
+
