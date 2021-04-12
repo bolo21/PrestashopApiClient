@@ -16,10 +16,15 @@ class PrestashopProductApiClient
      * @var string
      */
     private $apiKey;
+    /**
+     * @var string
+     */
+    private $domain;
 
     public function __construct(string $apiKey, string $domain)
     {
         $this->apiKey = $apiKey;
+        $this->domain = $domain;
         $access = "https://{$apiKey}@{$domain}/api/products/?output_format=JSON";
         $json = file_get_contents($access);
         if (!isset($json)) {
@@ -68,7 +73,7 @@ class PrestashopProductApiClient
             if (!isset($this->productIds[$productId])) {
                 new ProductNotFoundException("Product having id {$productId} does not exist");
             }
-            array_push($prestashopProducts, new PrestashopProduct($this->apiKey, $productId));
+            array_push($prestashopProducts, new PrestashopProduct($this->apiKey, $this->domain, $productId));
         }
         return $prestashopProducts;
     }
