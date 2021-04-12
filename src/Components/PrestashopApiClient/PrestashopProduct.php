@@ -33,6 +33,10 @@ class PrestashopProduct
      * @var array
      */
     private $linkRewrites;
+     /**
+     * @var string
+     */
+    private $imgUrl;
 
     /**
      * @return array
@@ -81,16 +85,24 @@ class PrestashopProduct
     {
         return $this->linkRewrites;
     }
-
-    public function __construct(string $apiKey, int $id)
+    
+    /**
+     * @return string
+     */
+    public function getLinkRewrites(): string
     {
-        $this->init($apiKey, $id);
+        return $this->imgUrl;
+    }
+
+    public function __construct(string $apiKey, string $domain, int $id)
+    {
+        $this->init($apiKey, $domain, $id);
     }
 
 
-    private function init(string $apiKey, int $id)
+    private function init(string $apiKey, string $domain, int $id)
     {
-        $result = file_get_contents("https://{$apiKey}@dev.artemi.be/api/products/{$id}?output_format=JSON");
+        $result = file_get_contents("https://{$apiKey}@{$domain}/api/products/{$id}?output_format=JSON");
         $result = json_decode_utf8($result);
         $this->id = $result->product->id;
         $this->descriptions = $result->product->description;
@@ -99,6 +111,7 @@ class PrestashopProduct
         $this->names = $result->product->name;
         $this->shortDescriptions = $result->product->description_short;
         $this->linkRewrites = $result->product->link_rewrite;
+        $this->imgUrl = "https://{$domain}/img/p/{$id}/{$id}.jpg";
     }
 
     /**
