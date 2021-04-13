@@ -33,10 +33,6 @@ class PrestashopProduct
      * @var array
      */
     private $linkRewrites;
-     /**
-     * @var string
-     */
-    private $imgUrl;
 
     /**
      * @return array
@@ -85,14 +81,6 @@ class PrestashopProduct
     {
         return $this->linkRewrites;
     }
-    
-    /**
-     * @return string
-     */
-    public function getLinkRewrites(): string
-    {
-        return $this->imgUrl;
-    }
 
     public function __construct(string $apiKey, string $domain, int $id)
     {
@@ -111,7 +99,6 @@ class PrestashopProduct
         $this->names = $result->product->name;
         $this->shortDescriptions = $result->product->description_short;
         $this->linkRewrites = $result->product->link_rewrite;
-        $this->imgUrl = "https://{$domain}/img/p/{$id}/{$id}.jpg";
     }
 
     /**
